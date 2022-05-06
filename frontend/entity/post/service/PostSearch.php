@@ -14,13 +14,23 @@ final class PostSearch
     {
         return Post::find();
     }
+
     /**
-     * @param int $id
+     * @param array $condition
+     * @return Post[]
+     */
+    public function findAll(array $condition): array
+    {
+        return Post::findAll($condition);
+    }
+
+    /**
+     * @param array $condition
      * @return Post|null
      */
-    public function findByIdAndUserIdentity(int $id): ?Post
+    public function findOne(array $condition): ?Post
     {
-        return Post::findOne(['id' => $id, 'user_id' => $this->getIdentityId()]);
+        return Post::findOne($condition);
     }
 
     /**

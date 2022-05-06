@@ -25,8 +25,8 @@ services:
   mysql:
     image: mysql:5.7
     environment:
-      - MYSQL_ROOT_PASSWORD=verysecret
-      - MYSQL_DATABASE=yii2advanced
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=my
       - MYSQL_USER=yii2advanced
       - MYSQL_PASSWORD=secret
 

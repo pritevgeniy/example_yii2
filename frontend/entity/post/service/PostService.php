@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace frontend\entity\post\service;
 
-use Yii;
 use common\models\Post;
 use common\exceptions\http\NotFoundException;
 
@@ -19,17 +18,30 @@ final class PostService
 
     /**
      * @param array $attributes
+     * @param int $userId
      * @return Post
      * @todo вернуть DTO
      */
-    public function create(array $attributes): Post
+    public function create(array $attributes, int $userId): Post
     {
-        return $this->save($this->getModel(), array_merge($attributes, ['user_id' => $this->getIdentityId()]));
+        return $this->save(new Post(), array_merge($attributes, ['user_id' => $userId]));
     }
 
-    public function update(int $id, array $attributes): Post
+    /**
+     * @param int $id
+     * @param array $attributes
+     * @param int $userId
+     * @return Post
+     */
+    public function update(int $id, array $attributes, int $userId): Post
     {
-        return $this->save($this->getModel($id), array_merge($attributes, ['user_id' => $this->getIdentityId()]));
+        $model = $this->search->findOne(['id' => $id, 'user_id' => $userId]);
+        if ($model === null) {
+            //@todo может сделаем адаптер ошибок из доменных в http?
+            throw new NotFoundException('Not found Post id: ' . $id);
+        }
+
+        return $this->save($model, array_merge($attributes, ['user_id' => $userId]));
     }
 
     /**
@@ -43,30 +55,5 @@ final class PostService
         $model->save();
 
         return $model;
-    }
-
-    /**
-     * @return int
-     */
-    private function getIdentityId(): int
-    {
-        return Yii::$app->user->identity->id;
-    }
-
-    /**
-     * @param int|null $id
-     * @return Post
-     */
-    private function getModel(?int $id = null): Post
-    {
-        if ($id !== null) {
-            $model = $this->search->findByIdAndUserIdentity($id);
-            if ($model === null) {
-                //@todo может сделаем адаптер ошибок из доменных в http?
-                throw new NotFoundException('Not found Post id: ' . $id);
-            }
-        }
-
-        return $model ?? new Post();
     }
 }

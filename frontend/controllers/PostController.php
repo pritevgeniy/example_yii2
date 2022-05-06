@@ -72,7 +72,7 @@ class PostController extends Controller
             }
 
             try {
-                $this->service->create($form->getAttributes());
+                $this->service->create($form->getAttributes(), $this->getUserIdentityId());
             } catch (NotFoundException $e) {
                 throw new NotFoundHttpException($e->getMessage());
             }
@@ -100,7 +100,7 @@ class PostController extends Controller
                 throw new RuntimeException('Ошибка валидации');
             }
             try {
-                $this->service->update($id, $form->getAttributes());
+                $this->service->update($id, $form->getAttributes(), $this->getUserIdentityId());
             } catch (NotFoundException $e) {
                 throw new NotFoundHttpException($e->getMessage());
             }
@@ -131,11 +131,16 @@ class PostController extends Controller
      */
     private function getModel(int $id): Post
     {
-        $model = $this->search->findByIdAndUserIdentity($id);
+        $model = $this->search->findOne(['id' => $id, 'user_id' => $this->getUserIdentityId()]);
         if ($model === null) {
             throw new NotFoundHttpException('Post not found id: ' . $id);
         }
 
         return $model;
+    }
+
+    private function getUserIdentityId(): int
+    {
+        return Yii::$app->user->identity->id;
     }
 }
