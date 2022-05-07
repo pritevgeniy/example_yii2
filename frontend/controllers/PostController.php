@@ -10,11 +10,13 @@ use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\db\ActiveQuery;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use common\models\Post;
 use common\exceptions\http\FormValidateHttpException;
 use frontend\entity\post\form\PostCreateForm;
+use frontend\entity\post\form\PostUpdateForm;
 use frontend\entity\post\service\PostService;
 use frontend\entity\post\service\PostSearch;
 use common\exceptions\http\NotFoundException;
@@ -39,6 +41,11 @@ class PostController extends Controller
                 'class' => AccessControl::class,
                 'only' => ['index', 'create', 'update'],
                 'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
                     [
                         'actions' => ['index', 'create', 'update'],
                         'allow' => true,
@@ -92,7 +99,7 @@ class PostController extends Controller
      */
     public function actionUpdate(int $id)
     {
-        $form = new PostCreateForm();
+        $form = new PostUpdateForm();
         $model = $this->getModel($id);
 
         if ($form->load(Yii::$app->request->post())) {
@@ -121,7 +128,18 @@ class PostController extends Controller
      */
     public function actionView(int $id): string
     {
-        return $this->render('view', ['model' => $this->getModel($id)]);
+        $model = $this->search->findQuery()
+            ->with(['comments' => function(ActiveQuery $query) {
+                $query->with(['user'])->orderBy('created_at DESC');
+            }])
+            ->where(['id' => $id])
+            ->one();
+        //@todo получение комментов генератором?
+        if ($model === null) {
+            throw new NotFoundHttpException('Post not found id: ' . $id);
+        }
+
+        return $this->render('view', ['model' => $model]);
     }
 
     /**

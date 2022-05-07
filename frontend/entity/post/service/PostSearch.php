@@ -32,12 +32,4 @@ final class PostSearch
     {
         return Post::findOne($condition);
     }
-
-    /**
-     * @return int
-     */
-    private function getIdentityId(): int
-    {
-        return Yii::$app->user->identity->id;
-    }
 }

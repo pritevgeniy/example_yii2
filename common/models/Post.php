@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace common\models;
 
 use yii\db\ActiveRecord;
+use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\db\BaseActiveRecord;
 use yii\db\Expression;
@@ -68,5 +69,10 @@ class Post extends ActiveRecord
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
+    }
+
+    public function getComments(): ActiveQuery
+    {
+        return $this->hasMany(Comment::class, ['post_id' => 'id']);
     }
 }

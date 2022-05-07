@@ -1,16 +1,20 @@
 <?php
+
+declare(strict_types=1);
+
 namespace frontend\tests\entity\post;
 
-use common\fixtures\UserFixture;
 use Yii;
+use Codeception\Test\Unit;
 use common\models\Post;
 use frontend\entity\post\form\PostCreateForm;
 use frontend\entity\post\service\PostSearch;
 use frontend\entity\post\service\PostService;
 use yii\base\InvalidConfigException;
+use common\fixtures\UserFixture;
 use frontend\tests\UnitTester;
 
-class PostTest extends \Codeception\Test\Unit
+class PostTest extends Unit
 {
     /**
      * @var UnitTester

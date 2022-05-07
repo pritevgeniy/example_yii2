@@ -36,8 +36,7 @@ class m220503_075046_add_tables extends Migration
             'user_id' => $this->integer()->notNull(),
             'post_id' => $this->integer()->notNull(),
             'text' => $this->string(),
-            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP')
         ], $tableOptions);
         $this->createIndex('I_user_id', '{{%comment}}', 'user_id');
         $this->createIndex('I_post_id', '{{%comment}}', 'post_id');
