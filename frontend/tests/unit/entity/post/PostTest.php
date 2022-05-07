@@ -7,11 +7,13 @@ use common\models\Post;
 use frontend\entity\post\form\PostCreateForm;
 use frontend\entity\post\service\PostSearch;
 use frontend\entity\post\service\PostService;
+use yii\base\InvalidConfigException;
+use frontend\tests\UnitTester;
 
 class PostTest extends \Codeception\Test\Unit
 {
     /**
-     * @var \frontend\tests\UnitTester
+     * @var UnitTester
      */
     protected $tester;
     
@@ -29,7 +31,10 @@ class PostTest extends \Codeception\Test\Unit
     {
     }
 
-    public function testCreate()
+    /**
+     * @throws InvalidConfigException
+     */
+    public function testCreate(): void
     {
         $form  = new PostCreateForm([
             'title' => 'title',
@@ -39,24 +44,28 @@ class PostTest extends \Codeception\Test\Unit
         $userId = 1;
 
         $service = $this->getService();
-        expect($form->validate())->equals(true);
+        $this->assertEquals(true, $form->validate());
 
         $search = $this->getSearch();
-        expect($service->create($form->getAttributes(), $userId))->isInstanceOf(Post::class);
         $post = $search->findOne($form->getAttributes());
-        expect($post)->isInstanceOf(Post::class);
-        expect($post->title)->equals('title');
+        $this->assertInstanceOf(Post::class, $post);
+        $this->assertEquals('title', $post->title);
         $postUpdated = $service->update($post->id, ['title' => 'title1'], $userId);
-        expect($postUpdated)->isInstanceOf(Post::class);
-        expect($postUpdated->title)->equals('title1');
-
+        $this->assertNotNull($postUpdated);
+        $this->assertEquals('title1', $postUpdated->title);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     private function getService(): PostService
     {
         return Yii::createObject(PostService::class);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     private function getSearch(): PostSearch
     {
         return Yii::createObject(PostSearch::class);
