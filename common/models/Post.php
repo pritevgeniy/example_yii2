@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace common\models;
 
+use frontend\entity\log\behaviors\LogBehavior;
 use yii\db\ActiveRecord;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
@@ -53,6 +54,14 @@ class Post extends ActiveRecord
                 'value' => new Expression('NOW()'),
 
             ],
+            'log' => [
+                'class' => LogBehavior::class,
+                'events' => [
+                    self::EVENT_AFTER_INSERT => [$this, 'postCreate'],
+                    self::EVENT_AFTER_UPDATE => [$this, 'postUpdate']
+                ],
+                'value' => $this,
+            ]
         ];
     }
 

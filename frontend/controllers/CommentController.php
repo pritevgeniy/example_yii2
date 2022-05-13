@@ -13,6 +13,7 @@ use yii\web\NotFoundHttpException;
 use common\exceptions\http\FormValidateHttpException;
 use frontend\entity\comment\form\CommentCreateForm;
 use frontend\entity\comment\service\CommentService;
+use frontend\entity\log\service\LogService;
 use common\exceptions\http\NotFoundException;
 
 class CommentController extends Controller

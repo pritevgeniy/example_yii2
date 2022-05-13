@@ -6,6 +6,8 @@ namespace common\models;
 
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\db\BaseActiveRecord;
+use yii\db\Expression;
 
 /**
  * @property int $id
@@ -25,7 +27,7 @@ class Log extends ActiveRecord
     /**
      * @var array|string[]
      */
-    public static array $types = [
+    public static array $typeNames = [
         self::USER_LOGIN => 'User Login',
         self::USER_LOGOUT => 'User Logout',
         self::POST_CREATE => 'Post Create',
@@ -47,7 +49,13 @@ class Log extends ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::class,
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
         ];
     }
 
@@ -58,7 +66,7 @@ class Log extends ActiveRecord
     {
         return [
             [['user_id', 'type', 'element_id'], 'required'],
-            ['type', 'in', 'range' => self::$types],
+            ['type', 'in', 'range' => array_keys(self::$typeNames)],
             [['user_id', 'element_id'], 'integer'],
         ];
     }

@@ -45,7 +45,7 @@ class m220503_075046_add_tables extends Migration
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'element_id' => $this->integer()->notNull(),
-            'type' => $this->char(),
+            'type' => $this->string()->notNull(),
             'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP')
         ], $tableOptions);
         $this->createIndex('I_user_id', '{{%log}}', 'user_id');

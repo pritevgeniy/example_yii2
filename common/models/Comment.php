@@ -6,9 +6,10 @@ namespace common\models;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\behaviors\TimestampBehavior;
 use yii\db\BaseActiveRecord;
 use yii\db\Expression;
+use yii\behaviors\TimestampBehavior;
+use frontend\entity\log\behaviors\LogBehavior;
 
 /**
  * @property int $id
@@ -41,6 +42,13 @@ class Comment extends ActiveRecord
                 'value' => new Expression('NOW()'),
 
             ],
+            'log' => [
+                'class' => LogBehavior::class,
+                'events' => [
+                    self::EVENT_AFTER_INSERT => [$this, 'commentCreate']
+                ],
+                'value' => $this,
+            ]
         ];
     }
 
