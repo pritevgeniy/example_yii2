@@ -6,7 +6,7 @@ namespace frontend\entity\log\service;
 
 use common\models\Log;
 
-final class LogService
+class LogService
 {
     /**
      * @param array $attributes

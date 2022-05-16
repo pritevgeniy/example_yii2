@@ -36,4 +36,13 @@ class LogDto
     {
         return $this->elementId;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'user_id' => $this->userId,
+            'type' => $this->type,
+            'element_id' => $this->elementId
+        ];
+    }
 }

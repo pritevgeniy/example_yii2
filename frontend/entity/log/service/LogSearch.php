@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace frontend\entity\log\service;
 
+use frontend\entity\log\dto\LogDto;
 use yii\db\ActiveQuery;
 use common\models\Log;
 
@@ -33,11 +34,11 @@ final class LogSearch
     }
 
     /**
-     * @param int $postId
+     * @param LogDto $dto
      * @return array
      */
-    public function findByPos(int $postId): array
+    public function findByDto(LogDto $dto): array
     {
-        return Log::findAll(['post_id' => $postId]);
+        return Log::findAll($dto->toArray());
     }
 }

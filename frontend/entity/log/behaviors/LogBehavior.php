@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace frontend\entity\log\behaviors;
 
 use common\models\Log;
+use frontend\entity\log\dto\LogDto;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 use frontend\entity\log\service\LogService;
@@ -46,10 +47,6 @@ class LogBehavior extends Behavior
 
     private function fillByAR(string $type, ActiveRecord $model): array
     {
-        return [
-            'type' => $type,
-            'element_id' => $model->id,
-            'user_id' => $model->user_id
-        ];
+        return (new LogDto($model->user_id, $type, $model->id))->toArray();
     }
 }
